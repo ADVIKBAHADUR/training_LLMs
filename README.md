@@ -1,9 +1,6 @@
-# CS7CS4 - Giovanni Di Liberto
+The following project is adapted fom the module CS7CS4 Machine Learning, Trinity College Dublin
 
 Code for assignment based on the nanogpt-lecture (see details below).
-
-
-
 
 # nanogpt-lecture
 
