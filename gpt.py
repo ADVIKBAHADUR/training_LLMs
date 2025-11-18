@@ -5,22 +5,23 @@ from torch.utils.tensorboard import SummaryWriter
 import os
 
 # hyperparameters
-batch_size = 12
+batch_size = 86
 block_size = 256
-max_iters = 1000
+max_iters = 5000
 eval_interval = 10
-learning_rate = 3e-3
+learning_rate = 3e-4
 device = 'xpu' if torch.xpu.is_available() else 'cpu'
+print(device)
 eval_iters = 200
-n_embd = 128
-n_head = 4
+n_embd = 160
+n_head = 9
 n_layer = 3
-dropout = 0.3
+dropout = 0.4
 # ------------
 
 torch.manual_seed(1337)
 
-with open('input_childSpeech_trainingSet.txt', 'r', encoding='utf-8') as f:
+with open('datasets/input_childSpeech_trainingSet.txt', 'r', encoding='utf-8') as f:
     text = f.read()
 
 chars = sorted(list(set(text)))
@@ -70,9 +71,9 @@ def get_grad_norm(model):
     return total_norm ** 0.5
 
 # Create checkpoint directory
-os.makedirs('checkpoints', exist_ok=True)
+os.makedirs('models/checkpoints_v5', exist_ok=True)
 
-writer = SummaryWriter(log_dir="runs/childSpeech_experiment_v2")
+writer = SummaryWriter(log_dir="runs/childSpeech_experiment_v5")
 
 class Head(nn.Module):
     def __init__(self, head_size):
@@ -84,7 +85,7 @@ class Head(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
-        B,T,C = x.shape
+        B,T,C = x.shape #  B=batch, T=sequence length, C=embedding dimension
         k = self.key(x)
         q = self.query(x)
         wei = q @ k.transpose(-2,-1) * k.shape[-1]**-0.5
@@ -210,7 +211,7 @@ for iter in range(max_iters):
         }, iter)
         
         writer.add_scalar('Metrics/Overfitting_Gap', val_loss - train_loss, iter)
-        
+        writer.flush()
         # Save latest checkpoint
         checkpoint = {
             'iter': iter,
@@ -226,12 +227,12 @@ for iter in range(max_iters):
             'stoi': stoi,
             'itos': itos
         }
-        torch.save(checkpoint, 'checkpoints/latest_model.pth')
+        torch.save(checkpoint, 'models/checkpoints_v5/latest_model.pth')
         
         # Save best model
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(checkpoint, 'checkpoints/best_model.pth')
+            torch.save(checkpoint, 'models/checkpoints_v5/best_model.pth')
             print(f"✓ Best model saved! Val loss: {val_loss:.4f}")
 
     # Training step
@@ -249,6 +250,7 @@ for iter in range(max_iters):
     
     if iter % 50 == 0:
         writer.add_scalar('Metrics/Batch_Loss', loss.item(), iter)
+        writer.flush()      
 
 # Generate sample text
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
@@ -258,4 +260,4 @@ print("="*50)
 print(decode(m.generate(context, max_new_tokens=500)[0].tolist()))
 
 writer.close()
-print("\nTraining complete! Models saved in 'checkpoints/' directory")
+print("\nTraining complete! Models saved in 'checkpoints_v5/' directory")

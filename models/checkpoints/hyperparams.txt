@@ -1,0 +1,12 @@
+batch_size = 86
+block_size = 256
+max_iters = 5000
+eval_interval = 10
+learning_rate = 3e-4
+device = 'xpu' if torch.xpu.is_available() else 'cpu'
+print(device)
+eval_iters = 200
+n_embd = 128
+n_head = 6
+n_layer = 3
+dropout = 0.4
