@@ -1,0 +1,156 @@
+{
+    "dataset_path": "datasets/input_childSpeech_trainingSet.txt",
+    "num_characters": 246982,
+    "num_lines": 10001,
+    "average_line_length": 24.695730426957304,
+    "vocab_size": 40,
+    "vocabulary_preview": [
+        "\n",
+        " ",
+        "A",
+        "B",
+        "C",
+        "D",
+        "G",
+        "H",
+        "I",
+        "L",
+        "M",
+        "N",
+        "R",
+        "S",
+        "U",
+        "W",
+        "Y",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "y"
+    ],
+    "first_300_characters": "Night night All done\nNight night I see bird\nWhat is that Help me please\nNo mine I climb\nI sing I wash hands\nNo mine No touch\nI found it Uh oh spill\nGo park I want cookie\nI want cookie Look moon\nI wash hands I climb\nMore more Yummy apple\nAll done No like it\nMama I want play with big red ball outside ",
+    "character_frequencies_top_20": [
+        [
+            " ",
+            45076
+        ],
+        [
+            "e",
+            18812
+        ],
+        [
+            "o",
+            15547
+        ],
+        [
+            "a",
+            14322
+        ],
+        [
+            "i",
+            11553
+        ],
+        [
+            "t",
+            11469
+        ],
+        [
+            "\n",
+            10000
+        ],
+        [
+            "d",
+            9557
+        ],
+        [
+            "l",
+            8873
+        ],
+        [
+            "I",
+            8469
+        ],
+        [
+            "h",
+            8355
+        ],
+        [
+            "r",
+            8257
+        ],
+        [
+            "n",
+            7983
+        ],
+        [
+            "s",
+            7262
+        ],
+        [
+            "m",
+            6429
+        ],
+        [
+            "u",
+            6258
+        ],
+        [
+            "g",
+            6235
+        ],
+        [
+            "p",
+            6069
+        ],
+        [
+            "b",
+            5130
+        ],
+        [
+            "y",
+            5063
+        ]
+    ],
+    "num_alphabetic_characters": 191906,
+    "num_digits": 0,
+    "num_spaces": 45076,
+    "num_punctuation_characters": 0,
+    "unusual_characters": [
+        "\n"
+    ],
+    "no_missing_important_characters": 14,
+    "missing_important_characters": [
+        "E",
+        "F",
+        "J",
+        "K",
+        "O",
+        "P",
+        "Q",
+        "T",
+        "V",
+        "X",
+        "Z",
+        "q",
+        "x",
+        "z"
+    ]
+}

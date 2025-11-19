@@ -1,0 +1,154 @@
+{
+    "dataset_path": "datasets/input_shakespeare.txt",
+    "num_characters": 1115394,
+    "num_lines": 40001,
+    "average_line_length": 27.884152896177596,
+    "vocab_size": 65,
+    "vocabulary_preview": [
+        "\n",
+        " ",
+        "!",
+        "$",
+        "&",
+        "'",
+        ",",
+        "-",
+        ".",
+        "3",
+        ":",
+        ";",
+        "?",
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k"
+    ],
+    "first_300_characters": "First Citizen:\nBefore we proceed any further, hear me speak.\n\nAll:\nSpeak, speak.\n\nFirst Citizen:\nYou are all resolved rather to die than to famish?\n\nAll:\nResolved. resolved.\n\nFirst Citizen:\nFirst, you know Caius Marcius is chief enemy to the people.\n\nAll:\nWe know't, we know't.\n\nFirst Citizen:\nLet us",
+    "character_frequencies_top_20": [
+        [
+            " ",
+            169892
+        ],
+        [
+            "e",
+            94611
+        ],
+        [
+            "t",
+            67009
+        ],
+        [
+            "o",
+            65798
+        ],
+        [
+            "a",
+            55507
+        ],
+        [
+            "h",
+            51310
+        ],
+        [
+            "s",
+            49696
+        ],
+        [
+            "r",
+            48889
+        ],
+        [
+            "n",
+            48529
+        ],
+        [
+            "i",
+            45537
+        ],
+        [
+            "\n",
+            40000
+        ],
+        [
+            "l",
+            33339
+        ],
+        [
+            "d",
+            31358
+        ],
+        [
+            "u",
+            26584
+        ],
+        [
+            "m",
+            22243
+        ],
+        [
+            "y",
+            20448
+        ],
+        [
+            ",",
+            19846
+        ],
+        [
+            "w",
+            17585
+        ],
+        [
+            "f",
+            15770
+        ],
+        [
+            "c",
+            15623
+        ]
+    ],
+    "num_alphabetic_characters": 851078,
+    "num_digits": 27,
+    "num_spaces": 169892,
+    "num_punctuation_characters": 54393,
+    "unusual_characters": [
+        "\n",
+        "$",
+        "&",
+        ":"
+    ],
+    "no_missing_important_characters": 0,
+    "missing_important_characters": []
+}

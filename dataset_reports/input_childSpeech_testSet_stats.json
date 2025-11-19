@@ -1,0 +1,156 @@
+{
+    "dataset_path": "datasets/input_childSpeech_testSet.txt",
+    "num_characters": 24113,
+    "num_lines": 1001,
+    "average_line_length": 24.08891108891109,
+    "vocab_size": 40,
+    "vocabulary_preview": [
+        "\n",
+        " ",
+        "A",
+        "B",
+        "C",
+        "D",
+        "G",
+        "H",
+        "I",
+        "L",
+        "M",
+        "N",
+        "R",
+        "S",
+        "U",
+        "W",
+        "Y",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "y"
+    ],
+    "first_300_characters": "Look airplane I want cookie\nI love you I found it\nI see doggy No touch\nI tired Night night\nYummy apple Night night\nNight night No stop\nShoes on My teddy\nI see bird Where kitty go\nI run fast No mine\nI jump I hungry\nI did it I see bird\nMore bubbles What is that\nI did it No stop\nI tired No mine\nMy tedd",
+    "character_frequencies_top_20": [
+        [
+            " ",
+            4347
+        ],
+        [
+            "e",
+            1927
+        ],
+        [
+            "o",
+            1535
+        ],
+        [
+            "a",
+            1344
+        ],
+        [
+            "i",
+            1124
+        ],
+        [
+            "t",
+            1081
+        ],
+        [
+            "\n",
+            1000
+        ],
+        [
+            "d",
+            942
+        ],
+        [
+            "l",
+            880
+        ],
+        [
+            "I",
+            843
+        ],
+        [
+            "r",
+            827
+        ],
+        [
+            "h",
+            824
+        ],
+        [
+            "n",
+            758
+        ],
+        [
+            "s",
+            696
+        ],
+        [
+            "m",
+            654
+        ],
+        [
+            "u",
+            623
+        ],
+        [
+            "p",
+            582
+        ],
+        [
+            "b",
+            559
+        ],
+        [
+            "g",
+            556
+        ],
+        [
+            "y",
+            469
+        ]
+    ],
+    "num_alphabetic_characters": 18766,
+    "num_digits": 0,
+    "num_spaces": 4347,
+    "num_punctuation_characters": 0,
+    "unusual_characters": [
+        "\n"
+    ],
+    "no_missing_important_characters": 14,
+    "missing_important_characters": [
+        "E",
+        "F",
+        "J",
+        "K",
+        "O",
+        "P",
+        "Q",
+        "T",
+        "V",
+        "X",
+        "Z",
+        "q",
+        "x",
+        "z"
+    ]
+}

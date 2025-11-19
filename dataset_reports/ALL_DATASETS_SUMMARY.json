@@ -1,0 +1,468 @@
+{
+    "input_childSpeech_trainingSet": {
+        "dataset_path": "datasets/input_childSpeech_trainingSet.txt",
+        "num_characters": 246982,
+        "num_lines": 10001,
+        "average_line_length": 24.695730426957304,
+        "vocab_size": 40,
+        "vocabulary_preview": [
+            "\n",
+            " ",
+            "A",
+            "B",
+            "C",
+            "D",
+            "G",
+            "H",
+            "I",
+            "L",
+            "M",
+            "N",
+            "R",
+            "S",
+            "U",
+            "W",
+            "Y",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+            "k",
+            "l",
+            "m",
+            "n",
+            "o",
+            "p",
+            "r",
+            "s",
+            "t",
+            "u",
+            "v",
+            "w",
+            "y"
+        ],
+        "first_300_characters": "Night night All done\nNight night I see bird\nWhat is that Help me please\nNo mine I climb\nI sing I wash hands\nNo mine No touch\nI found it Uh oh spill\nGo park I want cookie\nI want cookie Look moon\nI wash hands I climb\nMore more Yummy apple\nAll done No like it\nMama I want play with big red ball outside ",
+        "character_frequencies_top_20": [
+            [
+                " ",
+                45076
+            ],
+            [
+                "e",
+                18812
+            ],
+            [
+                "o",
+                15547
+            ],
+            [
+                "a",
+                14322
+            ],
+            [
+                "i",
+                11553
+            ],
+            [
+                "t",
+                11469
+            ],
+            [
+                "\n",
+                10000
+            ],
+            [
+                "d",
+                9557
+            ],
+            [
+                "l",
+                8873
+            ],
+            [
+                "I",
+                8469
+            ],
+            [
+                "h",
+                8355
+            ],
+            [
+                "r",
+                8257
+            ],
+            [
+                "n",
+                7983
+            ],
+            [
+                "s",
+                7262
+            ],
+            [
+                "m",
+                6429
+            ],
+            [
+                "u",
+                6258
+            ],
+            [
+                "g",
+                6235
+            ],
+            [
+                "p",
+                6069
+            ],
+            [
+                "b",
+                5130
+            ],
+            [
+                "y",
+                5063
+            ]
+        ],
+        "num_alphabetic_characters": 191906,
+        "num_digits": 0,
+        "num_spaces": 45076,
+        "num_punctuation_characters": 0,
+        "unusual_characters": [
+            "\n"
+        ],
+        "no_missing_important_characters": 14,
+        "missing_important_characters": [
+            "E",
+            "F",
+            "J",
+            "K",
+            "O",
+            "P",
+            "Q",
+            "T",
+            "V",
+            "X",
+            "Z",
+            "q",
+            "x",
+            "z"
+        ]
+    },
+    "input_childSpeech_testSet": {
+        "dataset_path": "datasets/input_childSpeech_testSet.txt",
+        "num_characters": 24113,
+        "num_lines": 1001,
+        "average_line_length": 24.08891108891109,
+        "vocab_size": 40,
+        "vocabulary_preview": [
+            "\n",
+            " ",
+            "A",
+            "B",
+            "C",
+            "D",
+            "G",
+            "H",
+            "I",
+            "L",
+            "M",
+            "N",
+            "R",
+            "S",
+            "U",
+            "W",
+            "Y",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+            "k",
+            "l",
+            "m",
+            "n",
+            "o",
+            "p",
+            "r",
+            "s",
+            "t",
+            "u",
+            "v",
+            "w",
+            "y"
+        ],
+        "first_300_characters": "Look airplane I want cookie\nI love you I found it\nI see doggy No touch\nI tired Night night\nYummy apple Night night\nNight night No stop\nShoes on My teddy\nI see bird Where kitty go\nI run fast No mine\nI jump I hungry\nI did it I see bird\nMore bubbles What is that\nI did it No stop\nI tired No mine\nMy tedd",
+        "character_frequencies_top_20": [
+            [
+                " ",
+                4347
+            ],
+            [
+                "e",
+                1927
+            ],
+            [
+                "o",
+                1535
+            ],
+            [
+                "a",
+                1344
+            ],
+            [
+                "i",
+                1124
+            ],
+            [
+                "t",
+                1081
+            ],
+            [
+                "\n",
+                1000
+            ],
+            [
+                "d",
+                942
+            ],
+            [
+                "l",
+                880
+            ],
+            [
+                "I",
+                843
+            ],
+            [
+                "r",
+                827
+            ],
+            [
+                "h",
+                824
+            ],
+            [
+                "n",
+                758
+            ],
+            [
+                "s",
+                696
+            ],
+            [
+                "m",
+                654
+            ],
+            [
+                "u",
+                623
+            ],
+            [
+                "p",
+                582
+            ],
+            [
+                "b",
+                559
+            ],
+            [
+                "g",
+                556
+            ],
+            [
+                "y",
+                469
+            ]
+        ],
+        "num_alphabetic_characters": 18766,
+        "num_digits": 0,
+        "num_spaces": 4347,
+        "num_punctuation_characters": 0,
+        "unusual_characters": [
+            "\n"
+        ],
+        "no_missing_important_characters": 14,
+        "missing_important_characters": [
+            "E",
+            "F",
+            "J",
+            "K",
+            "O",
+            "P",
+            "Q",
+            "T",
+            "V",
+            "X",
+            "Z",
+            "q",
+            "x",
+            "z"
+        ]
+    },
+    "input_shakespeare": {
+        "dataset_path": "datasets/input_shakespeare.txt",
+        "num_characters": 1115394,
+        "num_lines": 40001,
+        "average_line_length": 27.884152896177596,
+        "vocab_size": 65,
+        "vocabulary_preview": [
+            "\n",
+            " ",
+            "!",
+            "$",
+            "&",
+            "'",
+            ",",
+            "-",
+            ".",
+            "3",
+            ":",
+            ";",
+            "?",
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Y",
+            "Z",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+            "k"
+        ],
+        "first_300_characters": "First Citizen:\nBefore we proceed any further, hear me speak.\n\nAll:\nSpeak, speak.\n\nFirst Citizen:\nYou are all resolved rather to die than to famish?\n\nAll:\nResolved. resolved.\n\nFirst Citizen:\nFirst, you know Caius Marcius is chief enemy to the people.\n\nAll:\nWe know't, we know't.\n\nFirst Citizen:\nLet us",
+        "character_frequencies_top_20": [
+            [
+                " ",
+                169892
+            ],
+            [
+                "e",
+                94611
+            ],
+            [
+                "t",
+                67009
+            ],
+            [
+                "o",
+                65798
+            ],
+            [
+                "a",
+                55507
+            ],
+            [
+                "h",
+                51310
+            ],
+            [
+                "s",
+                49696
+            ],
+            [
+                "r",
+                48889
+            ],
+            [
+                "n",
+                48529
+            ],
+            [
+                "i",
+                45537
+            ],
+            [
+                "\n",
+                40000
+            ],
+            [
+                "l",
+                33339
+            ],
+            [
+                "d",
+                31358
+            ],
+            [
+                "u",
+                26584
+            ],
+            [
+                "m",
+                22243
+            ],
+            [
+                "y",
+                20448
+            ],
+            [
+                ",",
+                19846
+            ],
+            [
+                "w",
+                17585
+            ],
+            [
+                "f",
+                15770
+            ],
+            [
+                "c",
+                15623
+            ]
+        ],
+        "num_alphabetic_characters": 851078,
+        "num_digits": 27,
+        "num_spaces": 169892,
+        "num_punctuation_characters": 54393,
+        "unusual_characters": [
+            "\n",
+            "$",
+            "&",
+            ":"
+        ],
+        "no_missing_important_characters": 0,
+        "missing_important_characters": []
+    }
+}
