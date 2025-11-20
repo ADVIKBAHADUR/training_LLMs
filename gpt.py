@@ -5,18 +5,18 @@ from torch.utils.tensorboard import SummaryWriter
 import os
 
 # hyperparameters
-batch_size = 86
+batch_size = 128
 block_size = 256
-max_iters = 3000
+max_iters = 5000
 eval_interval = 10
 learning_rate = 3e-4
-device = 'xpu' if torch.xpu.is_available() else 'cpu'
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print(device)
 eval_iters = 200
-n_embd = 102
+n_embd = 120
 n_head = 6
 n_layer = 6
-dropout = 0.25
+dropout = 0.2
 # ------------
 
 torch.manual_seed(1337)
@@ -57,24 +57,52 @@ def get_batch(split):
     ix = torch.randint(len(data) - block_size, (batch_size,))
     x = torch.stack([data[i:i+block_size] for i in ix])
     y = torch.stack([data[i+1:i+block_size+1] for i in ix])
-
-    # Simple on-the-fly augmentation: token dropout (replace some tokens with random tokens)
-    # This acts as regularization and slightly improves robustness/generalization.
-    # Also propagate masking to previous tokens (up to prev_k positions) when training.
+    
     if split == 'train':
-        token_dropout_prob = 0.08
-        prev_k = 3  # number of previous tokens to also mask, if exist
-        # create mask on the same device as x
-        mask = (torch.rand(x.shape, device=x.device) < token_dropout_prob)
-        # propagate mask backwards so that if position t is masked, t-1..t-prev_k are also masked
-        for offset in range(1, prev_k + 1):
-            mask[:, offset:] |= mask[:, offset:]
+        # Combine strategies: higher masking rate (25%) + BERT 80-10-10 + span masking
+        mask_prob = 0.15  # Increased from 0.08, research shows 15-40% works well
+        mean_span_length = 3  # Mask spans instead of individual tokens
+        
+        # Create span masks
+        mask = torch.zeros(x.shape, dtype=torch.bool, device=x.device)
+        
+        for batch_idx in range(x.shape[0]):
+            num_tokens_to_mask = int(mask_prob * block_size)
+            masked_count = 0
+            
+            while masked_count < num_tokens_to_mask:
+                # Random starting position
+                start_pos = torch.randint(0, block_size, (1,)).item()
+                # Random span length (1-5 tokens, avg ~3)
+                span_len = min(
+                    torch.randint(1, mean_span_length * 2, (1,)).item(),
+                    block_size - start_pos,
+                    num_tokens_to_mask - masked_count
+                )
+                
+                end_pos = start_pos + span_len
+                mask[batch_idx, start_pos:end_pos] = True
+                masked_count += span_len
+        
+        # Apply BERT's 80-10-10 rule on masked positions
         if mask.any():
+            rand_uniform = torch.rand(x.shape, device=x.device)
+            
+            # 80%: replace with random token
+            replace_mask = mask & (rand_uniform < 0.8)
             rand_tokens = torch.randint(0, vocab_size, x.shape, dtype=torch.long, device=x.device)
-            x = torch.where(mask, rand_tokens, x)
-
+            x = torch.where(replace_mask, rand_tokens, x)
+            
+            # 10%: replace with different random token (double randomization)
+            swap_mask = mask & (rand_uniform >= 0.8) & (rand_uniform < 0.9)
+            swap_tokens = torch.randint(0, vocab_size, x.shape, dtype=torch.long, device=x.device)
+            x = torch.where(swap_mask, swap_tokens, x)
+            
+            # 10%: keep original (no change needed - helps model learn unmasked distribution)
+    
     x, y = x.to(device), y.to(device)
     return x, y
+
 
 @torch.no_grad()
 def estimate_loss():
@@ -102,9 +130,9 @@ def get_grad_norm(model):
     return total_norm ** 0.5
 
 # Create checkpoint directory
-os.makedirs('models/checkpoints_v8', exist_ok=True)
+os.makedirs('models/checkpoints_v9', exist_ok=True)
 
-writer = SummaryWriter(log_dir="runs/childSpeech_experiment_v8")
+writer = SummaryWriter(log_dir="runs/childSpeech_experiment_v9")
 
 class Head(nn.Module):
     def __init__(self, head_size):
@@ -178,11 +206,11 @@ class GPTLanguageModel(nn.Module):
 
     def _init_weights(self, module):
         if isinstance(module, nn.Linear):
-            torch.nn.init.normal_(module.weight, mean=0.0, std=1)
+            torch.nn.init.normal_(module.weight, mean=0.0, std=0.1)
             if module.bias is not None:
                 torch.nn.init.zeros_(module.bias)
         elif isinstance(module, nn.Embedding):
-            torch.nn.init.normal_(module.weight, mean=0.0, std=1)
+            torch.nn.init.normal_(module.weight, mean=0.0, std=0.1)
 
     def forward(self, idx, targets=None):
         B, T = idx.shape
@@ -258,12 +286,12 @@ for iter in range(max_iters):
             'stoi': stoi,
             'itos': itos
         }
-        torch.save(checkpoint, 'models/checkpoints_v8/latest_model.pth')
+        torch.save(checkpoint, 'models/checkpoints_v9/latest_model.pth')
         
         # Save best model
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(checkpoint, 'models/checkpoints_v8/best_model.pth')
+            torch.save(checkpoint, 'models/checkpoints_v9/best_model.pth')
             print(f"✓ Best model saved! Val loss: {val_loss:.4f}")
 
     # Training step
@@ -291,4 +319,4 @@ print("="*50)
 print(decode(m.generate(context, max_new_tokens=500)[0].tolist()))
 
 writer.close()
-print("\nTraining complete! Models saved in 'checkpoints_v8/' directory")
+print("\nTraining complete! Models saved in 'checkpoints_v9/' directory")
