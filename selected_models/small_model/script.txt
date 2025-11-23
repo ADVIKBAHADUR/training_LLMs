@@ -88,9 +88,9 @@ def get_grad_norm(model):
     return total_norm ** 0.5
 
 # Create checkpoint directory
-os.makedirs('selected_models/small_model_wo_skip', exist_ok=True)
+os.makedirs('selected_models/small_model', exist_ok=True)
 
-writer = SummaryWriter(log_dir="runs/selected_models/small_model_wo_skip")
+writer = SummaryWriter(log_dir="runs/selected_models/small_model")
 
 class Head(nn.Module):
     def __init__(self, head_size):
@@ -148,8 +148,8 @@ class Block(nn.Module):
         self.ln2 = nn.LayerNorm(n_embd)
 
     def forward(self, x):
-        x = self.sa(self.ln1(x))
-        x = self.ffwd(self.ln2(x))
+        x = x + self.sa(self.ln1(x))
+        x = x + self.ffwd(self.ln2(x))
         return x
 
 class GPTLanguageModel(nn.Module):
@@ -244,12 +244,12 @@ for iter in range(max_iters):
             'stoi': stoi,
             'itos': itos
         }
-        torch.save(checkpoint, 'selected_models/small_model_wo_skip/latest_model.pth')
+        torch.save(checkpoint, 'selected_models/small_model/latest_model.pth')
         
         # Save best model
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(checkpoint, 'selected_models/small_model_wo_skip/best_model.pth')
+            torch.save(checkpoint, 'selected_models/small_model/best_model.pth')
             print(f"✓ Best model saved! Val loss: {val_loss:.4f}")
 
     # Training step
@@ -277,4 +277,4 @@ print("="*50)
 print(decode(m.generate(context, max_new_tokens=500)[0].tolist()))
 
 writer.close()
-print("\nTraining complete! Models saved in 'selected_models/small_model_wo_skip' directory")
+print("\nTraining complete! Models saved in 'selected_models/small_model' directory")
