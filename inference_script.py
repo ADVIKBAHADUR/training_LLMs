@@ -103,68 +103,125 @@ class GPTLanguageModel(nn.Module):
             idx = torch.cat((idx, idx_next), dim=1)
         return idx
 
-def load_model(checkpoint_path, device='cpu'):
+def count_parameters(model):
+    """Count the number of trainable parameters in the model"""
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+def load_model(checkpoint_path, device='xpu'):
     """Load a trained model from checkpoint"""
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
-    
+
     # Extract hyperparameters
     vocab_size = checkpoint['vocab_size']
     n_embd = checkpoint['n_embd']
     n_head = checkpoint['n_head']
     n_layer = checkpoint['n_layer']
     block_size = checkpoint['block_size']
-    
+
     # Initialize model
     model = GPTLanguageModel(vocab_size, n_embd, n_head, n_layer, block_size)
     model.load_state_dict(checkpoint['model_state_dict'])
     model.to(device)
     model.eval()
-    
+
     # Load encoding/decoding functions
     stoi = checkpoint['stoi']
     itos = checkpoint['itos']
     encode = lambda s: [stoi[c] for c in s]
     decode = lambda l: ''.join([itos[i] for i in l])
-    
+
+    # Print model info
+    num_params = count_parameters(model)
     print(f"Model loaded from iteration {checkpoint['iter']}")
+    print(f"Number of parameters: {num_params:,}")
     print(f"Train loss: {checkpoint['train_loss']:.4f}")
     print(f"Val loss: {checkpoint['val_loss']:.4f}")
-    
+
     return model, encode, decode
+
+def evaluate_on_test_set(model, test_data, block_size, device='cpu', batch_size=32):
+    """Evaluate model on test dataset and return loss"""
+    model.eval()
+    total_loss = 0
+    num_batches = 0
+
+    with torch.no_grad():
+        # Process test data in batches
+        for i in range(0, len(test_data) - block_size - 1, batch_size * block_size):
+            # Create batch
+            batch_data = []
+            batch_targets = []
+
+            for j in range(batch_size):
+                start_idx = i + j * block_size
+                if start_idx + block_size + 1 > len(test_data):
+                    break
+                batch_data.append(test_data[start_idx:start_idx + block_size])
+                batch_targets.append(test_data[start_idx + 1:start_idx + block_size + 1])
+
+            if len(batch_data) == 0:
+                break
+
+            # Convert to tensors
+            x = torch.tensor(batch_data, dtype=torch.long, device=device)
+            y = torch.tensor(batch_targets, dtype=torch.long, device=device)
+
+            # Forward pass
+            logits, loss = model(x, y)
+            total_loss += loss.item()
+            num_batches += 1
+
+    avg_loss = total_loss / num_batches if num_batches > 0 else 0
+    return avg_loss
 
 def generate_text(model, encode, decode, prompt="", max_tokens=500, device='cpu'):
     """Generate text from the model"""
     model.eval()
-    
     with torch.no_grad():
         if prompt:
             context = torch.tensor([encode(prompt)], dtype=torch.long, device=device)
         else:
             context = torch.zeros((1, 1), dtype=torch.long, device=device)
-        
+
         generated = model.generate(context, max_new_tokens=max_tokens)
         text = decode(generated[0].tolist())
-    
+
     return text
 
 if __name__ == "__main__":
     # Configuration
     device = 'xpu' if torch.xpu.is_available() else 'cpu'
-    checkpoint_path = 'checkpoints/best_model.pth'  # Change to 'latest_model.pth' if needed
-    
+    checkpoint_path = 'selected_models/small_model_wo_skip/best_model.pth'  # Change to 'latest_model.pth' if needed
+    test_dataset_path = 'datasets/input_shakespeare.txt'  # Set to path of test dataset if available
+
     print(f"Using device: {device}")
     print(f"Loading model from: {checkpoint_path}\n")
-    
+
     # Load model
     model, encode, decode = load_model(checkpoint_path, device)
-    
+
+    # Evaluate on test set if provided
+    if test_dataset_path:
+        print(f"\nEvaluating on test dataset: {test_dataset_path}")
+        print("="*50)
+
+        # Load test data
+        with open(test_dataset_path, 'r', encoding='utf-8') as f:
+            test_text = f.read()
+        test_data = encode(test_text)
+
+        # Evaluate
+        test_loss = evaluate_on_test_set(model, test_data, model.block_size, device)
+        print(f"Test loss: {test_loss:.4f}")
+        print("="*50)
+
     # Generate text without prompt
     print("\n" + "="*50)
     print("Generation without prompt:")
     print("="*50)
     text = generate_text(model, encode, decode, prompt="", max_tokens=500, device=device)
     print(text)
-    
+
     # Generate text with prompt
     print("\n" + "="*50)
     print("Generation with prompt:")
@@ -173,21 +230,22 @@ if __name__ == "__main__":
     print(f"Prompt: '{prompt}'")
     text = generate_text(model, encode, decode, prompt=prompt, max_tokens=300, device=device)
     print(text)
-    
+
     # Interactive mode
     print("\n" + "="*50)
     print("Interactive mode (type 'quit' to exit):")
     print("="*50)
+
     while True:
         user_prompt = input("\nEnter prompt: ")
         if user_prompt.lower() == 'quit':
             break
-        
+
         try:
             tokens = int(input("Max tokens (default 200): ") or "200")
         except:
             tokens = 200
-        
+
         generated = generate_text(model, encode, decode, prompt=user_prompt, max_tokens=tokens, device=device)
         print("\nGenerated text:")
         print(generated)
