@@ -191,7 +191,7 @@ def generate_text(model, encode, decode, prompt="", max_tokens=500, device='cpu'
 if __name__ == "__main__":
     # Configuration
     device = 'xpu' if torch.xpu.is_available() else 'cpu'
-    checkpoint_path = 'selected_models/small_model_wo_skip/best_model.pth'  # Change to 'latest_model.pth' if needed
+    checkpoint_path = 'selected_models/small_model/best_model.pth'  # Change to 'latest_model.pth' if needed
     test_dataset_path = 'datasets/input_shakespeare.txt'  # Set to path of test dataset if available
 
     print(f"Using device: {device}")

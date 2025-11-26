@@ -19,30 +19,10 @@ def analyse_dataset(path):
     else:
         print("All important characters are present.")
 
-
     chars = sorted(list(set(text)))
     counter = Counter(text)
     top_10 = counter.most_common(10)
 
-    # Create a mapping for special characters
-    label_mapping = {
-        ' ': 'space',
-        '\n': 'newline',
-        '\t': 'tab',
-        '\r': 'carriage return'
-    }
-
-    # Replace characters with readable labels
-    characters = [label_mapping.get(char, char) for char, count in top_10]
-    frequencies = [count for char, count in top_10]
-
-    plt.bar(characters, frequencies)
-    plt.xlabel('Characters')
-    plt.ylabel('Frequency')
-    plt.title('Top 10 Most Common Characters for Dataset: ' + os.path.basename(path))
-    plt.xticks(rotation=45, ha='right')  # Rotate labels for readability
-    plt.tight_layout()
-    plt.show()
     num_chars = len(text)
     num_lines = text.count("\n") + 1
     vocab_size = len(chars)
@@ -66,6 +46,7 @@ def analyse_dataset(path):
         "vocabulary_preview": chars[:50],
         "first_300_characters": text[:300],
         "character_frequencies_top_20": counter.most_common(20),
+        "character_frequencies_top_10": top_10,
         "num_alphabetic_characters": num_alpha,
         "num_digits": num_digits,
         "num_spaces": num_spaces,
@@ -86,6 +67,15 @@ def inspect_datasets(dataset_paths, output_dir="dataset_reports"):
     os.makedirs(output_dir, exist_ok=True)
 
     summary = {}
+    all_stats = {}
+
+    # simple mapping to make common invisible characters readable on plots
+    label_mapping = {
+        ' ': 'space',
+        '\n': 'newline',
+        '\t': 'tab',
+        '\r': 'carriage return'
+    }
 
     for path in dataset_paths:
         name = os.path.splitext(os.path.basename(path))[0]
@@ -104,25 +94,102 @@ def inspect_datasets(dataset_paths, output_dir="dataset_reports"):
         print(f"➡️ Sample preview:\n{stats['first_300_characters']}")
         print(f"➡️ Unusual characters: {stats['unusual_characters']}\n")
         print(f"➡️ Missing important characters: {stats['missing_important_characters']}\n")
-        
 
         # Save JSON
         out = os.path.join(output_dir, name + "_stats.json")
-        with open(out, "w") as f:
-            json.dump(stats, f, indent=4)
+        with open(out, "w", encoding="utf-8") as f:
+            json.dump(stats, f, indent=4, ensure_ascii=False)
 
         summary[name] = stats
+        all_stats[name] = stats
         print(f"✓ Saved report to {out}")
 
+    # Create plots
+    # If both child speech training and test are present, create a combined grouped bar chart
+    child_train_key = os.path.splitext(os.path.basename(dataset_paths[0]))[0]  # placeholder init
+    # find correct keys by name matching
+    keys = list(all_stats.keys())
+    child_train_key = next((k for k in keys if "childSpeech_trainingSet" in k or "input_childSpeech_trainingSet" in k), None)
+    child_test_key = next((k for k in keys if "childSpeech_testSet" in k or "input_childSpeech_testSet" in k), None)
+
+    # Helper to convert characters to readable labels
+    def readable(chars):
+        return [label_mapping.get(c, c) for c in chars]
+
+    if child_train_key and child_test_key:
+        s1 = all_stats[child_train_key]['character_frequencies_top_10']
+        s2 = all_stats[child_test_key]['character_frequencies_top_10']
+
+        chars1 = [c for c, _ in s1]
+        freqs1 = [cnt for _, cnt in s1]
+        # align s2 to chars1 order (if some char missing in s2, use 0)
+        freq_map2 = {c: cnt for c, cnt in s2}
+        freqs2 = [freq_map2.get(c, 0) for c in chars1]
+
+        x = range(len(chars1))
+        width = 0.35
+
+        plt.figure(figsize=(12, 6))
+        plt.bar([i - width/2 for i in x], freqs1, width=width, label=child_train_key, color='skyblue')
+        plt.bar([i + width/2 for i in x], freqs2, width=width, label=child_test_key, color='salmon')
+        plt.xlabel('Characters')
+        plt.ylabel('Frequency')
+        plt.title('Top 10 Character Frequencies: Child Speech (Train vs Test)')
+        plt.xticks(x, readable(chars1), rotation=45, ha='right')
+        plt.legend()
+        plt.tight_layout()
+        out_plot = os.path.join(output_dir, f"{child_train_key}_vs_{child_test_key}_top10.png")
+        plt.savefig(out_plot, dpi=150)
+        plt.show()
+        print(f"✓ Saved combined child-speech comparison plot to {out_plot}")
+
+        # For other datasets, plot individually
+        for name, stats in all_stats.items():
+            if name in (child_train_key, child_test_key):
+                continue
+            top10 = stats['character_frequencies_top_10']
+            chars = [c for c, _ in top10]
+            freqs = [cnt for _, cnt in top10]
+
+            plt.figure(figsize=(8, 4))
+            plt.bar(readable(chars), freqs, color='lightgreen')
+            plt.xlabel('Characters')
+            plt.ylabel('Frequency')
+            plt.title(f"Top 10 Most Common Characters for Dataset: {name}")
+            plt.xticks(rotation=45, ha='right')
+            plt.tight_layout()
+            out_plot = os.path.join(output_dir, f"{name}_top10.png")
+            plt.savefig(out_plot, dpi=150)
+            plt.show()
+            print(f"✓ Saved plot to {out_plot}")
+    else:
+        # fallback: plot each dataset individually as before
+        for name, stats in all_stats.items():
+            top10 = stats['character_frequencies_top_10']
+            chars = [c for c, _ in top10]
+            freqs = [cnt for _, cnt in top10]
+
+            plt.figure(figsize=(8, 4))
+            plt.bar(readable(chars), freqs, color='lightgreen')
+            plt.xlabel('Characters')
+            plt.ylabel('Frequency')
+            plt.title(f"Top 10 Most Common Characters for Dataset: {name}")
+            plt.xticks(rotation=45, ha='right')
+            plt.tight_layout()
+            out_plot = os.path.join(output_dir, f"{name}_top10.png")
+            plt.savefig(out_plot, dpi=150)
+            plt.show()
+            print(f"✓ Saved plot to {out_plot}")
+
     # Save global summary
-    with open(os.path.join(output_dir, "ALL_DATASETS_SUMMARY.json"), "w") as f:
-        json.dump(summary, f, indent=4)
+    with open(os.path.join(output_dir, "ALL_DATASETS_SUMMARY.json"), "w", encoding="utf-8") as f:
+        json.dump(summary, f, indent=4, ensure_ascii=False)
 
     print("\n🎉 All dataset analyses complete!")
     return summary
 
 def get_comparisons():
-    with open("dataset_reports/ALL_DATASETS_SUMMARY.json", "r") as f:
+    with open("dataset_reports/ALL_DATASETS_SUMMARY.json", "r", encoding="utf-8") as f:
         summary = json.load(f)
 
     dataset_names = list(summary.keys())
@@ -158,7 +225,6 @@ def get_comparisons():
     plt.tight_layout(pad=3.0)  # Default is 1.08; increase for more spacing
     plt.show()
 
-    
 
 if __name__ == "__main__":
     DATASETS = [

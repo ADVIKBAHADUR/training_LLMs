@@ -7,16 +7,16 @@ import os
 # hyperparameters
 batch_size = 128
 block_size = 256
-max_iters = 5000
+max_iters = 3000
 eval_interval = 10
 learning_rate = 3e-4
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print(device)
 eval_iters = 200
-n_embd = 120
-n_head = 6
-n_layer = 4
-dropout = 0.05
+n_embd = 96
+n_head = 4
+n_layer = 3
+dropout = 0.2
 # ------------
 
 torch.manual_seed(1337)
@@ -88,16 +88,16 @@ def get_grad_norm(model):
     return total_norm ** 0.5
 
 # Create checkpoint directory
-os.makedirs('selected_models/large_model', exist_ok=True)
+os.makedirs('selected_models/medium_model', exist_ok=True)
 
-writer = SummaryWriter(log_dir="runs/selected_models/large_model")
+writer = SummaryWriter(log_dir="runs/selected_models/medium_model")
 
 class Head(nn.Module):
     def __init__(self, head_size):
         super().__init__()
-        self.key = nn.Linear(n_embd, head_size, bias=False)
-        self.query = nn.Linear(n_embd, head_size, bias=False)
-        self.value = nn.Linear(n_embd, head_size, bias=False)
+        self.key = nn.Linear(n_embd, head_size, bias=True)
+        self.query = nn.Linear(n_embd, head_size, bias=True)
+        self.value = nn.Linear(n_embd, head_size, bias=True)
         self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
         self.dropout = nn.Dropout(dropout)
 
@@ -244,12 +244,12 @@ for iter in range(max_iters):
             'stoi': stoi,
             'itos': itos
         }
-        torch.save(checkpoint, 'selected_models/large_model/latest_model.pth')
+        torch.save(checkpoint, 'selected_models/medium_model/latest_model.pth')
         
         # Save best model
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(checkpoint, 'selected_models/large_model/best_model.pth')
+            torch.save(checkpoint, 'selected_models/medium_model/best_model.pth')
             print(f"✓ Best model saved! Val loss: {val_loss:.4f}")
 
     # Training step
@@ -277,4 +277,4 @@ print("="*50)
 print(decode(m.generate(context, max_new_tokens=500)[0].tolist()))
 
 writer.close()
-print("\nTraining complete! Models saved in 'selected_models/large_model' directory")
+print("\nTraining complete! Models saved in 'selected_models/medium_model' directory")
