@@ -88,9 +88,9 @@ def get_grad_norm(model):
     return total_norm ** 0.5
 
 # Create checkpoint directory
-os.makedirs('selected_models/medium_model', exist_ok=True)
+os.makedirs('selected_models/medium_model_biastrue', exist_ok=True)
 
-writer = SummaryWriter(log_dir="runs/selected_models/medium_model")
+writer = SummaryWriter(log_dir="runs/selected_models/medium_model_biastrue")
 
 class Head(nn.Module):
     def __init__(self, head_size):
@@ -244,12 +244,12 @@ for iter in range(max_iters):
             'stoi': stoi,
             'itos': itos
         }
-        torch.save(checkpoint, 'selected_models/medium_model/latest_model.pth')
+        torch.save(checkpoint, 'selected_models/medium_model_biastrue/latest_model.pth')
         
         # Save best model
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(checkpoint, 'selected_models/medium_model/best_model.pth')
+            torch.save(checkpoint, 'selected_models/medium_model_biastrue/best_model.pth')
             print(f"✓ Best model saved! Val loss: {val_loss:.4f}")
 
     # Training step
@@ -277,4 +277,4 @@ print("="*50)
 print(decode(m.generate(context, max_new_tokens=500)[0].tolist()))
 
 writer.close()
-print("\nTraining complete! Models saved in 'selected_models/medium_model' directory")
+print("\nTraining complete! Models saved in 'selected_models/medium_model_biastrue' directory")
